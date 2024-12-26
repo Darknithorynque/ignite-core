@@ -13,9 +13,9 @@ public class JwtUtil {
     private static final String SECRET_KEY = "top secret";
     private static final long EXPIRATION_TIME = 1000 * 60 * 60;
 
-    public String generateToken(String userName) {
+    public String generateToken(String email) {
         return Jwts.builder()
-                .setSubject(userName)
+                .setSubject(email)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)

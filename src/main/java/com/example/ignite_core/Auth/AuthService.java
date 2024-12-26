@@ -5,40 +5,52 @@ import com.example.ignite_core.Config.SecurityConfig;
 import com.example.ignite_core.User.UserEntity;
 import com.example.ignite_core.User.UserRepository;
 import com.example.ignite_core.Utlility.JwtUtil;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AuthService {
 
     private final UserRepository userRepository;
-    private final SecurityConfig securityConfig;
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
+    private final PasswordEncoder passwordEncoder;
 
-    public AuthService(UserRepository userRepository, SecurityConfig securityConfig, AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, @Lazy AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
-        this.securityConfig = securityConfig;
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public String register(UserEntity user) {
-        UserEntity registeredUser = new UserEntity();
-        registeredUser.setName(user.getName());
-        registeredUser.setPassword(securityConfig.passwordEncoder().encode(user.getPassword()));
-        registeredUser.setSex(user.getSex());
-        registeredUser.setEmail(user.getEmail());
-
+        UserEntity registeredUser = new UserEntity(user.getId(), user.getName(), user.getEmail(), user.getPassword(), user.getAge(), user.getSex());
+        registeredUser.setPassword(passwordEncoder.encode(user.getPassword()));
          userRepository.save(registeredUser);
 
          return "Registered successfully..";
     }
 
     public String login(LoginRequest loginRequest) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+        try {
+            System.out.println("password: " + loginRequest.getPassword());
+            UserEntity user = userRepository.findByEmail(loginRequest.getEmail())
+                    .orElseThrow(() -> new RuntimeException("User not found with email: " + loginRequest.getEmail()));
 
-        return jwtUtil.generateToken(loginRequest.getUsername());
+            if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+                throw new RuntimeException("Bad credentials");
+            }
+
+            authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
+        );
+        return jwtUtil.generateToken(loginRequest.getEmail());
+    } catch (Exception e) {
+        throw new RuntimeException("Authentication failed: " + e.getMessage());
     }
+    }
+
 }
