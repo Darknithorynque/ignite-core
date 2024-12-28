@@ -22,8 +22,7 @@ public class UserEntity {
 
     public UserEntity(){
 
-}
-
+    }
     public UserEntity(Long id, String name, String email, String password, int age, Boolean sex) {
         this.id = id;
         this.name = name;
