@@ -4,12 +4,15 @@ import com.example.ignite_core.Auth.Model.LoginRequest;
 import com.example.ignite_core.Config.SecurityConfig;
 import com.example.ignite_core.User.UserEntity;
 import com.example.ignite_core.User.UserRepository;
+import com.example.ignite_core.Utlility.InvalidUserException;
 import com.example.ignite_core.Utlility.JwtUtil;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class AuthService {
@@ -27,11 +30,34 @@ public class AuthService {
     }
 
     public String register(UserEntity user) {
-        UserEntity registeredUser = new UserEntity(user.getId(), user.getName(), user.getEmail(), user.getPassword(), user.getAge(), user.getSex());
+        UserEntity registeredUser = new UserEntity(user.getId(), user.getName(), user.getHeight(), user.getHeight(), user.getEmail(), user.getPassword(), user.getSex(), user.getAge(), user.getAllergies());
         registeredUser.setPassword(passwordEncoder.encode(user.getPassword()));
          userRepository.save(registeredUser);
 
          return "Registered successfully..";
+    }
+
+    public String changePassword(LoginRequest loginRequest) {
+        Optional<UserEntity> user = userRepository.findByEmail(loginRequest.getEmail());
+        if (user.isEmpty()) {
+            throw new InvalidUserException("User is empty");
+        }
+        user.get().setPassword(passwordEncoder.encode(loginRequest.getPassword()));
+
+        return "Password changed successfully..\n"+"new password: "+user.get().getPassword();
+    }
+
+    public String changeEmail(LoginRequest loginRequest) {
+        Optional<UserEntity> user = userRepository.findByEmail(loginRequest.getEmail());
+        if (user.isEmpty()) {
+            throw new InvalidUserException("User is empty");
+        }
+
+        if(!passwordEncoder.matches(loginRequest.getPassword(), user.get().getPassword())) {
+            user.get().setEmail(loginRequest.getEmail());
+        } else { throw new InvalidUserException("Passwords do not match"); }
+
+        return "Email changed successfully..\n"+"new email: "+user.get().getEmail();
     }
 
     public String login(LoginRequest loginRequest) {
