@@ -1,5 +1,7 @@
 package com.example.ignite_core.User;
 import com.example.ignite_core.Utlility.InvalidUserException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +12,7 @@ import java.util.Optional;
 @Service
 public class UserService {
 
+    public static final Logger log = LoggerFactory.getLogger(UserService.class);
     UserRepository userRepository;
 
     public UserService(UserRepository userRepository){
@@ -17,14 +20,25 @@ public class UserService {
     }
 
     public List<UserEntity> getAllUsers(){
-        return userRepository.findAll();
+        try {
+            log.info("Get All Users");
+            return userRepository.findAll();
+        } catch (Exception e) {
+            throw new RuntimeException("Exception in UserService getAllUsers()", e);
+        }
     }
 
     public Optional<UserEntity> findUserById(Long id){
-       return userRepository.findById(id);
+        if(existingUser(id) == null){
+            throw new InvalidUserException("Invalid User Exception With Id: "+id);
+        }
+        log.info("Find User By Id:  {}", id);
+        return userRepository.findById(id);
     }
 
     public Optional<UserEntity> findByEmail(String email){
+
+        log.info("Find User By Email:  {}", email);
         return userRepository.findByEmail(email);
     }
 

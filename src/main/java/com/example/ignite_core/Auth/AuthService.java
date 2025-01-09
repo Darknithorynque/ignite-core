@@ -6,6 +6,8 @@ import com.example.ignite_core.User.UserEntity;
 import com.example.ignite_core.User.UserRepository;
 import com.example.ignite_core.Utlility.InvalidUserException;
 import com.example.ignite_core.Utlility.JwtUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,6 +18,8 @@ import java.util.Optional;
 
 @Service
 public class AuthService {
+
+    public static final Logger log = LoggerFactory.getLogger(AuthService.class);
 
     private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
@@ -30,7 +34,8 @@ public class AuthService {
     }
 
     public String register(UserEntity user) {
-        UserEntity registeredUser = new UserEntity(user.getId(), user.getName(), user.getWeight(), user.getHeight(), user.getEmail(), user.getPassword(), user.getSex(), user.getAge(), user.getAllergies());
+        log.info("register user: {}", user.getEmail());
+        UserEntity registeredUser = new UserEntity(user.getId(), user.getName(), user.getHeight(), user.getHeight(), user.getEmail(), user.getPassword(), user.getSex(), user.getAge(), user.getAllergies());
         registeredUser.setPassword(passwordEncoder.encode(user.getPassword()));
          userRepository.save(registeredUser);
 

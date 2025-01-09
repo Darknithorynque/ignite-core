@@ -34,7 +34,6 @@ public class MealService {
 
     //Eating Habit
     public EatingHabitEntity addEatingHabits(EatingHabitEntity eatingHabitEntity) {
-        EatingHabitEntity isEatingHabitExists = existsEatingHabitById(eatingHabitEntity.getId());
         if(!userRepository.existsById(eatingHabitEntity.getUserId())){
             throw new RuntimeException("User not found with id: " + eatingHabitEntity.getUserId());
         }
@@ -42,9 +41,8 @@ public class MealService {
         if (eatingHabitRepository.existsByUserId(eatingHabitEntity.getUserId())) {
             throw new RuntimeException("Eating Habit is already exists for user with id: " + eatingHabitEntity.getUserId());
         }
-        logger.info("Adding Eating Habit with id: {}", eatingHabitEntity.getId());
-        EatingHabitEntity eatingHabit = new EatingHabitEntity(eatingHabitEntity.getId(),eatingHabitEntity.getMealsPerDay(),eatingHabitEntity.getEatingHabit(),eatingHabitEntity.getFoodSource(),eatingHabitEntity.getUserId());
-        return eatingHabitRepository.save(eatingHabit);
+        logger.info("Adding new Eating Habit with user id: {}", eatingHabitEntity.getUserId());
+        return eatingHabitRepository.save(eatingHabitEntity);
     }
 
     public EatingHabitEntity updateEatingHabit(EatingHabitEntity eatingHabitEntity) {

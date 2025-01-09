@@ -11,7 +11,7 @@ import java.util.Date;
 public class JwtUtil {
 
     private static final String SECRET_KEY = "top secret";
-    private static final long EXPIRATION_TIME = 1000 * 60 * 60;
+    private static final long EXPIRATION_TIME = 8000 * 60 * 60;
 
     public String generateToken(String email) {
         return Jwts.builder()
