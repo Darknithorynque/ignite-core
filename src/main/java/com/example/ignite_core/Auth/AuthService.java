@@ -30,7 +30,7 @@ public class AuthService {
     }
 
     public String register(UserEntity user) {
-        UserEntity registeredUser = new UserEntity(user.getId(), user.getName(), user.getHeight(), user.getHeight(), user.getEmail(), user.getPassword(), user.getSex(), user.getAge(), user.getAllergies());
+        UserEntity registeredUser = new UserEntity(user.getId(), user.getName(), user.getWeight(), user.getHeight(), user.getEmail(), user.getPassword(), user.getSex(), user.getAge(), user.getAllergies());
         registeredUser.setPassword(passwordEncoder.encode(user.getPassword()));
          userRepository.save(registeredUser);
 
