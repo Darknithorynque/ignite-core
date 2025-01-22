@@ -68,11 +68,6 @@ public class MealController {
         return mealService.getMealBoxByUserId(userId);
     }
 
-    @PutMapping("/mealBox/update")
-    public MealBoxEntity updateMealBox(@RequestBody MealBoxEntity mealBox) {
-        return mealService.updateMealBox(mealBox);
-    }
-
     @DeleteMapping("/mealBox/delete/{id}")
     public void deleteMealBox(@PathVariable Long id) {
         mealService.deleteMealBoxById(id);

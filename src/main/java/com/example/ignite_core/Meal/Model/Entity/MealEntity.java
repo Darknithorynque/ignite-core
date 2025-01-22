@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 
 @Entity
@@ -25,14 +26,15 @@ public class MealEntity {
 
     private String content;
 
-    private LocalDate startDate;
+    private LocalDateTime startDate;
 
-    private LocalDate endDate;
+    private LocalDateTime endDate;
 
     private Calories calories;
 
     @ManyToOne
     @JoinColumn(name = "meal_box_id")
+    @JsonIgnore
     private MealBoxEntity mealBox;
 
     @Override

@@ -10,4 +10,6 @@ import java.util.Optional;
 public interface MealBoxRepository extends JpaRepository<MealBoxEntity, Long> {
     Boolean existsByUserId(Long userId);
     Optional<MealBoxEntity> findByUserId(Long userId);
+
+    void deleteByUserId(Long userId);
 }

@@ -7,6 +7,7 @@ import com.example.ignite_core.Meal.Repository.EatingHabitRepository;
 import com.example.ignite_core.Meal.Repository.MealBoxRepository;
 import com.example.ignite_core.Meal.Repository.MealRepository;
 import com.example.ignite_core.User.UserRepository;
+import com.example.ignite_core.Utlility.ValidateTimes;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+
+import static com.example.ignite_core.Utlility.ValidateTimes.validateTimes;
 
 @Service
 public class MealService {
@@ -87,18 +90,25 @@ public class MealService {
     }
 
     //MealBox
-    @Transactional
-    public MealBoxEntity saveMealBox(MealBoxEntity mealBoxEntity){
-        if(!userRepository.existsById(mealBoxEntity.getUserId())){
-            logger.error("User not found with id: {}", mealBoxEntity.getUserId());
-            throw new RuntimeException("User not found with id: " + mealBoxEntity.getUserId());
+    public MealBoxEntity saveMealBox(MealBoxEntity mealBox){
+        if(!userRepository.existsById(mealBox.getUserId())){
+            logger.error("User not found with id: {}", mealBox.getUserId());
+            throw new RuntimeException("User not found with id: " + mealBox.getUserId());
         }
-        if (mealBoxRepository.existsByUserId(mealBoxEntity.getUserId())) {
-            logger.error("User not found with id: {}", mealBoxEntity.getUserId());
-            throw new RuntimeException("Meal Box already exists for user with id: " + mealBoxEntity.getUserId());
+        if (mealBoxRepository.existsByUserId(mealBox.getUserId())) {
+            logger.error("User not found with id: {}", mealBox.getUserId());
+            throw new RuntimeException("Meal Box already exists for user with id: " + mealBox.getUserId());
         }
 
-        return mealBoxRepository.save(mealBoxEntity);
+        //Validate Times
+        mealBox.getMeals().forEach(meal -> validateTimes(meal.getStartDate(),meal.getEndDate()));
+
+        for (MealEntity meal : mealBox.getMeals()) {
+            meal.setMealBox(mealBox);
+        }
+
+
+        return mealBoxRepository.save(mealBox);
     }
 
     public List<MealEntity> saveMeals(List<MealEntity> meal){
@@ -127,33 +137,33 @@ public class MealService {
         return mealBoxRepository.findByUserId(userId);
     }
 
-    public MealBoxEntity updateMealBox(MealBoxEntity mealBoxEntity){
-        if(!userRepository.existsById(mealBoxEntity.getUserId())){
-            logger.error("User not found to update with user id: {}", mealBoxEntity.getUserId());
-            throw new RuntimeException("User not found to update with user id: " + mealBoxEntity.getUserId());
-        }
-
-        MealBoxEntity mealBox = existingMealBox(mealBoxEntity.getId());
-
-        mealBox.setMeals(mealBoxEntity.getMeals()); //must be detailed
-        logger.info("Updating Meal Box with id: {}", mealBoxEntity.getId());
-        return mealBoxRepository.save(mealBox);
-    }
-
     public MealBoxEntity existingMealBox(Long id){
         return mealBoxRepository.findById(id).orElse(null);
     }
 
-    public void deleteMealBoxById(Long id){
-        if (!userRepository.existsById(id)) {
-            logger.error("User not found to delete with id: {}", id);
-            throw new RuntimeException("User not found to delete with id: " + id);
-        }
-         mealBoxRepository.deleteById(id);
+    @Transactional
+    public void deleteMealBoxById(Long id) {
+        // Assuming you want to remove MealBoxEntity and its associated MealEntities
+        MealBoxEntity mealBox = mealBoxRepository.findByUserId(id)
+                .orElseThrow(() -> new RuntimeException("MealBox not found"));
+
+        for (MealEntity meal : mealBox.getMeals()) {
+            mealRepository.deleteById(meal.getId());
+        };
+
+        mealBoxRepository.delete(mealBox);
     }
 
 
     //Meal
+
+    //getAllMeals
+    //getMealById
+    //getMealByMealId
+    //saveMeal
+    //updateMeal
+    //updateDate
+    //updateContent(code,content)
 
 
 
