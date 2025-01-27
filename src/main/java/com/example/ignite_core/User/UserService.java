@@ -1,13 +1,18 @@
 package com.example.ignite_core.User;
 import com.example.ignite_core.Utlility.InvalidUserException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class UserService {
 
+    public static final Logger log = LoggerFactory.getLogger(UserService.class);
     UserRepository userRepository;
 
     public UserService(UserRepository userRepository){
@@ -15,53 +20,83 @@ public class UserService {
     }
 
     public List<UserEntity> getAllUsers(){
-        return userRepository.findAll();
+        try {
+            log.info("Get All Users");
+            return userRepository.findAll();
+        } catch (Exception e) {
+            throw new RuntimeException("Exception in UserService getAllUsers()", e);
+        }
     }
 
     public Optional<UserEntity> findUserById(Long id){
-       return userRepository.findById(id);
+        if(existingUser(id) == null){
+            throw new InvalidUserException("Invalid User Exception With Id: "+id);
+        }
+        log.info("Find User By Id:  {}", id);
+        return userRepository.findById(id);
     }
 
     public Optional<UserEntity> findByEmail(String email){
+
+        log.info("Find User By Email:  {}", email);
         return userRepository.findByEmail(email);
     }
 
-    public UserEntity updateUser(UserEntity user, Long id){
+    public UserEntity updateUser(UpdateUserRequest user, Long id){
 
         UserEntity updatedUser = userRepository.findById(id)
                 .map(existingUser -> updateExistingUser(existingUser,user))
                 .orElseThrow(() -> new InvalidUserException("Invalid User Exception With Id: "+id));
-        return userRepository.save(user);
+        return userRepository.save(updatedUser);
     }
 
-    public UserEntity updateExistingUser(UserEntity existingUser, UserEntity newUserDetails){
+    public UserEntity updateExistingUser(UserEntity existingUser, UpdateUserRequest newUserDetails){
         existingUser.setName(newUserDetails.getName());
-        existingUser.setEmail(newUserDetails.getEmail());
-        existingUser.setPassword(newUserDetails.getPassword());
         existingUser.setAge(newUserDetails.getAge());
-        existingUser.setSex(newUserDetails.getSex());
+        existingUser.setSex(newUserDetails.isSex());
         existingUser.setHeight(newUserDetails.getHeight());
         existingUser.setWeight(newUserDetails.getWeight());
-        existingUser.setAllergies(newUserDetails.getAllergies());
 
-        return newUserDetails;
+        return existingUser;
     }
 
     public void deleteUser(Long id){
         userRepository.deleteById(id);
     }
 
-    public void addAllergies(List<String> allergies, Long id){
+    public void addAllergies(ArrayList<String> allergies, Long id){
         UserEntity user = existingUser(id);
         for (String allergy : allergies){
-            user.getAllergies().add(allergy);
+            if(!user.getAllergies().contains(allergy)){
+                user.getAllergies().add(allergy);
+            }
         }
         userRepository.save(user);
     }
 
-    public void deleteAllergies(Long id){
+    @Transactional
+    public void deleteAllergies(ArrayList<String> allergies, Long id){
         UserEntity user = existingUser(id);
-        user.setAllergies(null);
+        List<String> userAllergies = new ArrayList<>(user.getAllergies());
+
+        userAllergies.removeIf(allergy -> allergies.stream()
+                .anyMatch(a -> a.trim().equalsIgnoreCase(allergy.trim())));
+
+        System.out.println("alllergies: "+ userAllergies );
+        user.setAllergies(userAllergies);
+        userRepository.save(user);
+    }
+
+    public void updateAllergies(ArrayList<String> allergies, Long id){
+        UserEntity user = existingUser(id);
+
+        user.setAllergies(new ArrayList<>());
+
+        for (String allergy : allergies) {
+            user.getAllergies().add(allergy);
+        }
+
+        userRepository.save(user);
     }
 
     public UserEntity existingUser(Long id){

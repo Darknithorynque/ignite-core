@@ -2,6 +2,7 @@ package com.example.ignite_core.User;
 
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,7 +32,7 @@ public class UserController {
     }
 
     @PutMapping("/update/{id}")
-    public UserEntity updateUser(@RequestBody UserEntity user, @PathVariable Long id) {
+    public UserEntity updateUser(@RequestBody UpdateUserRequest user, @PathVariable Long id) {
         return userService.updateUser(user, id);
     }
 
@@ -40,13 +41,18 @@ public class UserController {
         userService.deleteUser(id);
     }
 
-    @PostMapping("/allergies/{id}")
-    public void addAllergies(@RequestBody List<String> allergies, @PathVariable Long id) {
+    @PostMapping("/allergies/create/{id}")
+    public void addAllergies(@RequestBody ArrayList<String> allergies, @PathVariable Long id) {
         userService.addAllergies(allergies,id);
     }
 
-    @PutMapping("/allergies/{id}")
-    public void resetAllergies(@PathVariable Long id) {
-        userService.deleteAllergies(id);
+    @PutMapping("/allergies/delete/{id}")
+    public void deleteAllergies(@RequestBody ArrayList<String> allergies,@PathVariable Long id) {
+        userService.deleteAllergies(allergies,id);
+    }
+
+    @PutMapping("/allergies/update/{id}")
+    public void updateAllergies(@RequestBody ArrayList<String> allergies,@PathVariable Long id) {
+        userService.updateAllergies(allergies,id);
     }
 }
