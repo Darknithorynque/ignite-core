@@ -1,6 +1,6 @@
-package com.example.ignite_core.Meal.Repository;
+package com.example.ignite_core.Nutrition.Repository;
 
-import com.example.ignite_core.Meal.Model.Entity.MealEntity;
+import com.example.ignite_core.Nutrition.Model.Entity.MealEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

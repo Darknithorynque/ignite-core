@@ -1,4 +1,4 @@
-package com.example.ignite_core.Meal.Model.Entity;
+package com.example.ignite_core.Nutrition.Model.Entity;
 
 import jakarta.persistence.Embeddable;
 

@@ -1,16 +1,16 @@
-package com.example.ignite_core.Meal;
+package com.example.ignite_core.Nutrition;
 
-import com.example.ignite_core.Meal.Model.Entity.EatingHabitEntity;
-import com.example.ignite_core.Meal.Model.Entity.MealBoxEntity;
-import com.example.ignite_core.Meal.Model.Entity.MealEntity;
-import com.example.ignite_core.Meal.Repository.EatingHabitRepository;
-import com.example.ignite_core.Meal.Repository.MealBoxRepository;
-import com.example.ignite_core.Meal.Repository.MealRepository;
+import com.example.ignite_core.Nutrition.Model.Entity.EatingHabitEntity;
+import com.example.ignite_core.Nutrition.Model.Entity.MealBoxEntity;
+import com.example.ignite_core.Nutrition.Model.Entity.MealEntity;
+import com.example.ignite_core.Nutrition.Repository.EatingHabitRepository;
+import com.example.ignite_core.Nutrition.Repository.MealBoxRepository;
+import com.example.ignite_core.Nutrition.Repository.MealRepository;
 import com.example.ignite_core.User.UserRepository;
-import com.example.ignite_core.Utlility.ValidateTimes;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,16 +19,16 @@ import java.util.Optional;
 import static com.example.ignite_core.Utlility.ValidateTimes.validateTimes;
 
 @Service
-public class MealService {
+public class NutritionService {
 
-    private static final Logger logger = LoggerFactory.getLogger(MealService.class);
+    private static final Logger logger = LoggerFactory.getLogger(NutritionService.class);
 
     EatingHabitRepository eatingHabitRepository;
     MealBoxRepository mealBoxRepository;
     UserRepository userRepository;
     MealRepository mealRepository;
 
-    public MealService(EatingHabitRepository eatingHabitRepository, MealBoxRepository mealBoxRepository, UserRepository userRepository, MealRepository mealRepository) {
+    public NutritionService(EatingHabitRepository eatingHabitRepository, MealBoxRepository mealBoxRepository, UserRepository userRepository, MealRepository mealRepository) {
         this.eatingHabitRepository = eatingHabitRepository;
         this.mealBoxRepository = mealBoxRepository;
         this.userRepository = userRepository;
@@ -158,10 +158,67 @@ public class MealService {
     //Meal
 
     //getAllMeals
+    public List<MealEntity> getAllMeals(){
+        try {
+            return mealRepository.findAll();
+        } catch (DataAccessException e) {
+            logger.error("Failed to fetch meals from the database", e);
+            throw new RuntimeException("Could not retrieve meals. Please try again later.", e);
+        }
+    }
     //getMealById
+    public List<MealEntity> getMealByUserId(Long userId){
+        logger.info("Fetching meal by user id: {}", userId);
+
+        if (mealBoxRepository.findByUserId(userId).isEmpty()) throw new RuntimeException("Meal not found with id: " + userId);
+        Optional<MealBoxEntity> mealBox = mealBoxRepository.findByUserId(userId);
+
+        return mealBox.get().getMeals();
+    }
+
     //getMealByMealId
+    public Optional<MealEntity> getMealById(Long id){
+        logger.info("Fetching meal by id: {}", id);
+        return mealRepository.findById(id);
+    }
+
     //saveMeal
+    public void saveMeal(MealEntity meal){
+        if (meal.getMealBox().getId() == null){
+            throw new RuntimeException("Meal has not related to meal box");
+        }
+
+        for (MealEntity mealState : meal.getMealBox().getMeals() ) {
+            if (mealState.equals(meal)) {
+                throw new RuntimeException("Meal has already been saved");
+            }
+        }
+
+        MealBoxEntity mealBox = mealBoxRepository.findById(meal.getMealBox().getId()).orElse(null);
+
+        assert mealBox != null;
+        mealBox.getMeals().add(meal);
+
+        mealBoxRepository.save(mealBox);
+    }
+
     //updateMeal
+    public MealEntity updateMeal(MealEntity meal){
+        Optional<MealEntity> existingMeal = mealRepository.findById(meal.getId());
+        Optional<MealBoxEntity> existingMealBox = mealBoxRepository.findById(meal.getMealBox().getId());
+
+        if (existingMeal.isPresent() && existingMealBox.isPresent()) {
+            existingMeal.get().setMealBox(existingMealBox.get());
+            existingMeal.get().setMealCode(meal.getMealCode());
+            existingMeal.get().setStartDate(meal.getStartDate());
+            existingMeal.get().setEndDate(meal.getEndDate());
+            existingMeal.get().setContent(meal.getContent());
+            existingMeal.get().setActive(meal.isActive());
+            existingMeal.get().setLabel(meal.getLabel());
+            existingMeal.get().setCalories(meal.getCalories());
+        }
+        return existingMeal.get();
+    }
     //updateDate
     //updateContent(code,content)
 

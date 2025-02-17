@@ -1,12 +1,10 @@
-package com.example.ignite_core.Meal.Model.Entity;
+package com.example.ignite_core.Nutrition.Model.Entity;
 
-import com.example.ignite_core.Meal.Model.Enum.FoodSource;
+import com.example.ignite_core.Nutrition.Model.Enum.FoodSource;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Entity
 @Table(name = "EatingHabit")

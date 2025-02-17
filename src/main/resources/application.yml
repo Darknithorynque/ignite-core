@@ -12,3 +12,7 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
     hibernate:
       ddl-auto: update
+  application:
+    ai-integration:
+      api: "http/ai/chatbox"
+      key: "QRYUDNDCJJHS"

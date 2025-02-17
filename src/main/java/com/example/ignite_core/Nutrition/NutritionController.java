@@ -1,7 +1,7 @@
-package com.example.ignite_core.Meal;
+package com.example.ignite_core.Nutrition;
 
-import com.example.ignite_core.Meal.Model.Entity.EatingHabitEntity;
-import com.example.ignite_core.Meal.Model.Entity.MealBoxEntity;
+import com.example.ignite_core.Nutrition.Model.Entity.EatingHabitEntity;
+import com.example.ignite_core.Nutrition.Model.Entity.MealBoxEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -9,11 +9,11 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/meal")
-public class MealController {
+public class NutritionController {
 
-    MealService mealService;
+    NutritionService mealService;
 
-    public MealController(MealService mealService) {
+    public NutritionController(NutritionService mealService) {
         this.mealService = mealService;
     }
 
