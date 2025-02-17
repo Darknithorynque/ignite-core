@@ -2,10 +2,7 @@ package com.example.ignite_core.User;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Type;
 import org.hibernate.usertype.UserType;
 import org.springframework.context.annotation.Primary;

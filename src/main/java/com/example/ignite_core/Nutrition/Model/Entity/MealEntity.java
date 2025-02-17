@@ -1,13 +1,13 @@
-package com.example.ignite_core.Meal.Model.Entity;
+package com.example.ignite_core.Nutrition.Model.Entity;
 
 
+import com.example.ignite_core.Nutrition.Model.Enum.Label;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
@@ -31,6 +31,10 @@ public class MealEntity {
     private LocalDateTime endDate;
 
     private Calories calories;
+
+    private Label label;
+
+    private boolean active;
 
     @ManyToOne
     @JoinColumn(name = "meal_box_id")
