@@ -90,9 +90,8 @@ public class NutritionController {
     }
 
     @PostMapping("/meal/save")
-    public ResponseEntity<Void> saveMeal(@RequestBody MealEntity meal) {
-        mealService.saveMeal(meal);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<MealEntity> saveMeal(@RequestBody MealEntity meal, @RequestParam Long userId) {
+        return mealService.saveMeal(meal, userId);
     }
 
     @PutMapping("/meal/update")

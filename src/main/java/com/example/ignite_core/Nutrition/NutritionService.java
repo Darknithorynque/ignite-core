@@ -189,27 +189,27 @@ public class NutritionService {
     }
 
     //saveMeal
-    public ResponseEntity<Void> saveMeal(MealEntity meal){
-        if (meal.getMealBox().getId() == null){
-            logger.error("Meal box id is null");
+    public ResponseEntity<MealEntity> saveMeal(MealEntity meal, Long userId){
+        if (meal.getMealBox().getUserId() == null){
+            logger.error("Related meal box has not been found");
             throw new RuntimeException("Meal has not related to meal box");
         }
 
         for (MealEntity mealState : meal.getMealBox().getMeals() ) {
             if (mealState.equals(meal)) {
-                logger.error("Meal box already has meal box");
+                logger.error("Meal already has in the meal box");
                 throw new RuntimeException("Meal has already been saved");
             }
         }
 
-        MealBoxEntity mealBox = mealBoxRepository.findById(meal.getMealBox().getId()).orElse(null);
+        MealBoxEntity mealBox = mealBoxRepository.findById(userId).orElse(null);
 
         assert mealBox != null;
         mealBox.getMeals().add(meal);
 
         logger.info("Saving meal: {}", meal);
         mealBoxRepository.save(mealBox);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(meal);
     }
 
     //updateMeal
