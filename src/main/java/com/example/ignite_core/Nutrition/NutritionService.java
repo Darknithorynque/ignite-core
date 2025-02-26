@@ -92,11 +92,11 @@ public class NutritionService {
     //MealBox
     public MealBoxEntity saveMealBox(MealBoxEntity mealBox){
         if(!userRepository.existsById(mealBox.getUserId())){
-            logger.error("User not found with id: {}", mealBox.getUserId());
+            logger.error("User not found with user id: {}", mealBox.getUserId());
             throw new RuntimeException("User not found with id: " + mealBox.getUserId());
         }
         if (mealBoxRepository.existsByUserId(mealBox.getUserId())) {
-            logger.error("User not found with id: {}", mealBox.getUserId());
+            logger.error("MealBox not found with user id: {}", mealBox.getUserId());
             throw new RuntimeException("Meal Box already exists for user with id: " + mealBox.getUserId());
         }
 
@@ -219,6 +219,8 @@ public class NutritionService {
         }
         return existingMeal.get();
     }
+
+
     //updateDate
     //updateContent(code,content)
 
