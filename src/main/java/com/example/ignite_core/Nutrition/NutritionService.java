@@ -6,6 +6,7 @@ import com.example.ignite_core.Nutrition.Model.Entity.MealEntity;
 import com.example.ignite_core.Nutrition.Repository.EatingHabitRepository;
 import com.example.ignite_core.Nutrition.Repository.MealBoxRepository;
 import com.example.ignite_core.Nutrition.Repository.MealRepository;
+import com.example.ignite_core.User.UserEntity;
 import com.example.ignite_core.User.UserRepository;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
@@ -190,19 +191,20 @@ public class NutritionService {
 
     //saveMeal
     public ResponseEntity<MealEntity> saveMeal(MealEntity meal, Long userId){
-        if (meal.getMealBox().getUserId() == null){
+        MealBoxEntity mealBox = mealBoxRepository.findByUserId(userId).orElse(null);
+
+        if (mealBox == null) {
             logger.error("Related meal box has not been found");
             throw new RuntimeException("Meal has not related to meal box");
         }
 
-        for (MealEntity mealState : meal.getMealBox().getMeals() ) {
+        for (MealEntity mealState : mealBox.getMeals()) {
             if (mealState.equals(meal)) {
                 logger.error("Meal already has in the meal box");
                 throw new RuntimeException("Meal has already been saved");
             }
         }
 
-        MealBoxEntity mealBox = mealBoxRepository.findById(userId).orElse(null);
 
         assert mealBox != null;
         mealBox.getMeals().add(meal);
@@ -215,7 +217,7 @@ public class NutritionService {
     //updateMeal
     public ResponseEntity<MealEntity> updateMeal(MealEntity meal){
         Optional<MealEntity> existingMeal = mealRepository.findById(meal.getId());
-        Optional<MealBoxEntity> existingMealBox = mealBoxRepository.findById(meal.getMealBox().getId());
+        Optional<MealBoxEntity> existingMealBox = mealBoxRepository.findByUserId(existingMeal.get().getMealBox().getUserId());
 
         logger.info("Updating meal: {}", meal);
         if (existingMeal.isPresent() && existingMealBox.isPresent()) {
