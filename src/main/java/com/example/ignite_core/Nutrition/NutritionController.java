@@ -1,7 +1,8 @@
 package com.example.ignite_core.Nutrition;
 
-import com.example.ignite_core.Nutrition.Model.Entity.EatingHabitEntity;
 import com.example.ignite_core.Nutrition.Model.Entity.MealBoxEntity;
+import com.example.ignite_core.Nutrition.Model.Entity.MealEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -72,4 +73,48 @@ public class NutritionController {
     public void deleteMealBox(@PathVariable Long id) {
         mealService.deleteMealBoxById(id);
     }
+
+    @GetMapping("/meal/all")
+    public List<MealEntity> getAllMeals() {
+        return mealService.getAllMeals();
+    }
+
+    @GetMapping("/meal/{id}")
+    public ResponseEntity<Optional<MealEntity>> getMealById(@PathVariable Long id) {
+        return mealService.getMealById(id);
+    }
+
+    @GetMapping("/meal/user/{userId}")
+    public List<MealEntity> getMealByUserId(@PathVariable Long userId) {
+        return mealService.getMealByUserId(userId);
+    }
+
+    @PostMapping("/meal/save")
+    public ResponseEntity<Void> saveMeal(@RequestBody MealEntity meal) {
+        mealService.saveMeal(meal);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/meal/update")
+    public ResponseEntity<MealEntity> updateMeal(@RequestBody MealEntity meal) {
+        return mealService.updateMeal(meal);
+    }
+
+    @DeleteMapping("/delete/{mealId}")
+    public ResponseEntity<Void> deleteMeal(@PathVariable Long mealId) {
+        return mealService.deleteMealById(mealId);
+    }
+
+    @DeleteMapping("/delete/user/{userId}")
+    public ResponseEntity<Void> deleteMealsByUserId(@PathVariable Long userId) {
+        return mealService.deleteAllMealsByUserId(userId);
+    }
+
+    //Not Recommend
+//    @DeleteMapping("/delete/all")
+//    public ResponseEntity<Void> deleteAllMeals() {
+//       return mealService.deleteAllMeals();
+//    }
+
+
 }
