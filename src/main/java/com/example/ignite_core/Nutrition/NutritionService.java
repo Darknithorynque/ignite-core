@@ -208,6 +208,7 @@ public class NutritionService {
 
         assert mealBox != null;
         mealBox.getMeals().add(meal);
+        meal.setMealBox(mealBox);
 
         logger.info("Saving meal: {}", meal);
         mealBoxRepository.save(mealBox);
@@ -246,6 +247,7 @@ public class NutritionService {
         return ResponseEntity.noContent().build();
     }
 
+    @Transactional
     public ResponseEntity<Void> deleteAllMealsByUserId(Long userId){
         MealBoxEntity mealBox = mealBoxRepository.findByUserId(userId).orElse(null);
 
@@ -256,10 +258,16 @@ public class NutritionService {
 
         List<MealEntity> meals = mealBox.getMeals();
 
-        logger.info("Deleting meals user id: {}",userId);
-        for (MealEntity meal : meals) {
-            meal.setContent(null);
-        }
+        logger.info("Deleting Meals with user id: {} and meal size {}", userId, meals.size());
+
+        //First(mealRepo.deleteById(meal.getId())) we tried deletion with deleteById but hibernate working logic thought this guy trying to
+        // delete meals but we have still a relation between mealBox so I won't delete it here
+        //that's why we did deletion through meal box
+
+        meals.clear();
+
+        mealBoxRepository.save(mealBox);
+
         return ResponseEntity.noContent().build();
     }
 

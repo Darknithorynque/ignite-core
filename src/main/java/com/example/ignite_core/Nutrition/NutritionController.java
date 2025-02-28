@@ -99,12 +99,12 @@ public class NutritionController {
         return mealService.updateMeal(meal);
     }
 
-    @DeleteMapping("/delete/{mealId}")
+    @DeleteMapping("/meal/delete/{mealId}")
     public ResponseEntity<Void> deleteMeal(@PathVariable Long mealId) {
         return mealService.deleteMealById(mealId);
     }
 
-    @DeleteMapping("/delete/user/{userId}")
+    @DeleteMapping("/meal/delete/user/{userId}")
     public ResponseEntity<Void> deleteMealsByUserId(@PathVariable Long userId) {
         return mealService.deleteAllMealsByUserId(userId);
     }
