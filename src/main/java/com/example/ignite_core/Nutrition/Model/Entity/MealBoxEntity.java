@@ -20,6 +20,6 @@ public class MealBoxEntity {
 
     private Long userId;
 
-    @OneToMany(mappedBy = "mealBox", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "mealBox", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MealEntity> meals;
 }

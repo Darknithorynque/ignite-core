@@ -6,11 +6,13 @@ import com.example.ignite_core.Nutrition.Model.Entity.MealEntity;
 import com.example.ignite_core.Nutrition.Repository.EatingHabitRepository;
 import com.example.ignite_core.Nutrition.Repository.MealBoxRepository;
 import com.example.ignite_core.Nutrition.Repository.MealRepository;
+import com.example.ignite_core.User.UserEntity;
 import com.example.ignite_core.User.UserRepository;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -160,6 +162,7 @@ public class NutritionService {
     //getAllMeals
     public List<MealEntity> getAllMeals(){
         try {
+            logger.info("Fetching all meals");
             return mealRepository.findAll();
         } catch (DataAccessException e) {
             logger.error("Failed to fetch meals from the database", e);
@@ -170,43 +173,54 @@ public class NutritionService {
     public List<MealEntity> getMealByUserId(Long userId){
         logger.info("Fetching meal by user id: {}", userId);
 
-        if (mealBoxRepository.findByUserId(userId).isEmpty()) throw new RuntimeException("Meal not found with id: " + userId);
+        if (mealBoxRepository.findByUserId(userId).isEmpty()){
+            logger.error("Meal not found with user id {}", userId);
+            throw new RuntimeException("Meal not found with id: " + userId);
+        }
+
         Optional<MealBoxEntity> mealBox = mealBoxRepository.findByUserId(userId);
 
         return mealBox.get().getMeals();
     }
 
     //getMealByMealId
-    public Optional<MealEntity> getMealById(Long id){
+    public ResponseEntity<Optional<MealEntity>> getMealById(Long id){
         logger.info("Fetching meal by id: {}", id);
-        return mealRepository.findById(id);
+        return ResponseEntity.ok(mealRepository.findById(id));
     }
 
     //saveMeal
-    public void saveMeal(MealEntity meal){
-        if (meal.getMealBox().getId() == null){
+    public ResponseEntity<MealEntity> saveMeal(MealEntity meal, Long userId){
+        MealBoxEntity mealBox = mealBoxRepository.findByUserId(userId).orElse(null);
+
+        if (mealBox == null) {
+            logger.error("Related meal box has not been found");
             throw new RuntimeException("Meal has not related to meal box");
         }
 
-        for (MealEntity mealState : meal.getMealBox().getMeals() ) {
+        for (MealEntity mealState : mealBox.getMeals()) {
             if (mealState.equals(meal)) {
+                logger.error("Meal already has in the meal box");
                 throw new RuntimeException("Meal has already been saved");
             }
         }
 
-        MealBoxEntity mealBox = mealBoxRepository.findById(meal.getMealBox().getId()).orElse(null);
 
         assert mealBox != null;
         mealBox.getMeals().add(meal);
+        meal.setMealBox(mealBox);
 
+        logger.info("Saving meal: {}", meal);
         mealBoxRepository.save(mealBox);
+        return ResponseEntity.ok(meal);
     }
 
     //updateMeal
-    public MealEntity updateMeal(MealEntity meal){
+    public ResponseEntity<MealEntity> updateMeal(MealEntity meal){
         Optional<MealEntity> existingMeal = mealRepository.findById(meal.getId());
-        Optional<MealBoxEntity> existingMealBox = mealBoxRepository.findById(meal.getMealBox().getId());
+        Optional<MealBoxEntity> existingMealBox = mealBoxRepository.findByUserId(existingMeal.get().getMealBox().getUserId());
 
+        logger.info("Updating meal: {}", meal);
         if (existingMeal.isPresent() && existingMealBox.isPresent()) {
             existingMeal.get().setMealBox(existingMealBox.get());
             existingMeal.get().setMealCode(meal.getMealCode());
@@ -217,13 +231,45 @@ public class NutritionService {
             existingMeal.get().setLabel(meal.getLabel());
             existingMeal.get().setCalories(meal.getCalories());
         }
-        return existingMeal.get();
+        return ResponseEntity.ok(existingMeal.get());
     }
 
+    public ResponseEntity<Void> deleteMealById(Long id){
+        logger.warn("Deleting meal by id: {}", id);
+        mealRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
 
-    //updateDate
-    //updateContent(code,content)
+    //Not Recommended
+    public ResponseEntity<Void> deleteAllMeals(){
+        logger.warn("Deleting all meals");
+        mealRepository.deleteAll();
+        return ResponseEntity.noContent().build();
+    }
 
+    @Transactional
+    public ResponseEntity<Void> deleteAllMealsByUserId(Long userId){
+        MealBoxEntity mealBox = mealBoxRepository.findByUserId(userId).orElse(null);
+
+        if (mealBox == null) {
+            logger.error("Meal Box not found for user: {}", userId);
+            throw new RuntimeException("MealBox not found");
+        }
+
+        List<MealEntity> meals = mealBox.getMeals();
+
+        logger.info("Deleting Meals with user id: {} and meal size {}", userId, meals.size());
+
+        //First(mealRepo.deleteById(meal.getId())) we tried deletion with deleteById but hibernate working logic thought this guy trying to
+        // delete meals but we have still a relation between mealBox so I won't delete it here
+        //that's why we did deletion through meal box
+
+        meals.clear();
+
+        mealBoxRepository.save(mealBox);
+
+        return ResponseEntity.noContent().build();
+    }
 
 
 
