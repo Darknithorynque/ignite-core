@@ -6,7 +6,6 @@ import com.example.ignite_core.Nutrition.Model.Entity.MealEntity;
 import com.example.ignite_core.Nutrition.Repository.EatingHabitRepository;
 import com.example.ignite_core.Nutrition.Repository.MealBoxRepository;
 import com.example.ignite_core.Nutrition.Repository.MealRepository;
-import com.example.ignite_core.User.UserEntity;
 import com.example.ignite_core.User.UserRepository;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
@@ -103,7 +102,7 @@ public class NutritionService {
         }
 
         //Validate Times
-        mealBox.getMeals().forEach(meal -> validateTimes(meal.getStartDate(),meal.getEndDate()));
+        mealBox.getMeals().forEach(meal -> validateTimes(meal.getCreatedAt(),meal.getEndDate()));
 
         for (MealEntity meal : mealBox.getMeals()) {
             meal.setMealBox(mealBox);
@@ -224,7 +223,7 @@ public class NutritionService {
         if (existingMeal.isPresent() && existingMealBox.isPresent()) {
             existingMeal.get().setMealBox(existingMealBox.get());
             existingMeal.get().setMealCode(meal.getMealCode());
-            existingMeal.get().setStartDate(meal.getStartDate());
+            existingMeal.get().setCreatedAt(meal.getCreatedAt());
             existingMeal.get().setEndDate(meal.getEndDate());
             existingMeal.get().setContent(meal.getContent());
             existingMeal.get().setActive(meal.isActive());
