@@ -29,7 +29,7 @@ public class MealEntity {
     private String content;
 
     @CreationTimestamp
-    private LocalDateTime startDate;
+    private LocalDateTime createdAt;
 
     @UpdateTimestamp
     private LocalDateTime endDate;
@@ -47,6 +47,6 @@ public class MealEntity {
 
     @Override
     public String toString(){
-        return startDate + " " + endDate;
+        return createdAt + " " + endDate;
     }
 }
