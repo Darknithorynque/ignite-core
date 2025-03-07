@@ -155,6 +155,18 @@ public class NutritionService {
         mealBoxRepository.delete(mealBox);
     }
 
+    public ResponseEntity<List<MealEntity>> findActiveMealsByUserId(Long userId){
+        List<MealEntity> body = mealBoxRepository.findActiveMealsByUserId(userId);
+        return ResponseEntity.ok(body);
+
+    }
+
+    @Transactional
+    public void updateInMealBoxStatus(Long mealId, boolean inBoxStatus){
+        mealRepository.updateInBoxStatus(mealId, inBoxStatus);
+
+        ResponseEntity.ok("Updated status as {} " + inBoxStatus);
+    }
 
     //Meal
 
