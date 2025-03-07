@@ -38,7 +38,7 @@ public class MealEntity {
 
     private Label label;
 
-    private boolean active;
+    private boolean inBoxStatus;
 
     @ManyToOne
     @JoinColumn(name = "meal_box_id")

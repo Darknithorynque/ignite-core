@@ -226,7 +226,7 @@ public class NutritionService {
             existingMeal.get().setCreatedAt(meal.getCreatedAt());
             existingMeal.get().setEndDate(meal.getEndDate());
             existingMeal.get().setContent(meal.getContent());
-            existingMeal.get().setActive(meal.isActive());
+            existingMeal.get().setInBoxStatus(meal.isInBoxStatus());
             existingMeal.get().setLabel(meal.getLabel());
             existingMeal.get().setCalories(meal.getCalories());
         }

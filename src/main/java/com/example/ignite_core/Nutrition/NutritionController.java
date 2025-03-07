@@ -3,6 +3,9 @@ package com.example.ignite_core.Nutrition;
 import com.example.ignite_core.Nutrition.Model.Entity.MealBoxEntity;
 import com.example.ignite_core.Nutrition.Model.Entity.MealEntity;
 import org.springframework.http.ResponseEntity;
+import com.example.ignite_core.Nutrition.Model.Entity.MealEntity;
+import org.springframework.data.repository.query.Param;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -72,6 +75,16 @@ public class NutritionController {
     @DeleteMapping("/mealBox/delete/{id}")
     public void deleteMealBox(@PathVariable Long id) {
         mealService.deleteMealBoxById(id);
+    }
+
+    @GetMapping("/mealBox/activeMeals/{userId}")
+    public ResponseEntity<List<MealEntity>> getActiveInBoxes(@PathVariable Long userId){
+        return mealService.findActiveMealsByUserId(userId);
+    }
+
+    @PatchMapping("/meal/update/inBoxStatus/{mealId}")
+    public void updateInBoxStatus(@PathVariable Long mealId, @RequestParam boolean inBoxStatus){
+        mealService.updateInMealBoxStatus(mealId,inBoxStatus);
     }
 
     @GetMapping("/meal/all")
