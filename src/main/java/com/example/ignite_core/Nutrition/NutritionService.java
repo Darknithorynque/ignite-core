@@ -11,6 +11,7 @@ import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -213,18 +214,25 @@ public class NutritionService {
             existingMeal.get().setStartDate(meal.getStartDate());
             existingMeal.get().setEndDate(meal.getEndDate());
             existingMeal.get().setContent(meal.getContent());
-            existingMeal.get().setActive(meal.isActive());
+            existingMeal.get().setInBoxStatus(meal.isInBoxStatus());
             existingMeal.get().setLabel(meal.getLabel());
             existingMeal.get().setCalories(meal.getCalories());
         }
         return existingMeal.get();
     }
 
+    public ResponseEntity<List<MealEntity>> findActiveMealsByUserId(Long userId){
+        List<MealEntity> body = mealBoxRepository.findActiveMealsByUserId(userId);
+        return ResponseEntity.ok(body);
 
-    //updateDate
-    //updateContent(code,content)
+    }
 
+    @Transactional
+    public void updateInMealBoxStatus(Long mealId, boolean inBoxStatus){
+        mealRepository.updateInBoxStatus(mealId, inBoxStatus);
 
+        ResponseEntity.ok("Updated status as {} " + inBoxStatus);
+    }
 
 
 }
