@@ -28,13 +28,13 @@ public class WaterIntakeService {
         LocalDate today = LocalDate.now();
         LocalDateTime now = LocalDateTime.now();
         WaterIntakeEntity waterIntake = repository.findWaterIntakeByDate(userId, today)
-                .orElseGet(() -> {
-                    WaterIntakeEntity newRecord = new WaterIntakeEntity(userId, today, 0.0, now);
-                    return repository.save(newRecord);
-                });
+                .orElseGet(() -> repository.save(new WaterIntakeEntity(userId, today, 0.0, now)));
+
 
         waterIntake.setAmount(amount);
-        waterIntake.setLastUpdatedAt(now);
+        //waterIntake.setLastUpdatedAt(now);
+        waterIntake.setUserId(userId);
+        //waterIntake.setDate(today);
 
         repository.save(waterIntake);
         return ResponseEntity.ok(waterIntake);
@@ -66,7 +66,7 @@ public class WaterIntakeService {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
 
-            Optional<WaterIntakeEntity> waterIntake = repository.findWaterIntakeByDate(userId, date);
+            Optional<WaterIntakeEntity> waterIntake = repository.findByUserId(userId);
 
             waterIntake.ifPresent(intake -> {
                 intake.setAmount(amount);
@@ -74,6 +74,7 @@ public class WaterIntakeService {
                 repository.save(intake);
                 logger.info("Updated water intake for user {} on {}", userId, date);
             });
+
             return ResponseEntity.status(waterIntake.isPresent() ? HttpStatus.OK : HttpStatus.NOT_FOUND).build();
 
         } catch (Exception e) {
@@ -82,6 +83,7 @@ public class WaterIntakeService {
         }
     }
 
+    @Transactional
     ResponseEntity<String> deleteWaterIntake(Long userId, LocalDate date) {
         Optional<WaterIntakeEntity> existingWaterIntake = repository.findWaterIntakeByDate(userId, date);
 

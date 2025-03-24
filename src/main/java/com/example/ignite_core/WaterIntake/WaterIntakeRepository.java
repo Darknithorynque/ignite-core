@@ -17,4 +17,6 @@ public interface WaterIntakeRepository extends JpaRepository<WaterIntakeEntity, 
     @Modifying
     @Query("DELETE FROM WaterIntakeEntity w WHERE w.userId = :userId AND w.date = :date")
     void deleteWaterIntakeByDate(@Param("userId") Long userId, @Param("date") LocalDate date);
+
+    Optional<WaterIntakeEntity> findByUserId(Long userId);
 }
