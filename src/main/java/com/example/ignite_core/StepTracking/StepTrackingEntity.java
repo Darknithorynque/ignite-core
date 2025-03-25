@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "step_records")
@@ -20,6 +21,7 @@ public class StepTrackingEntity {
     private Long userId;
     private int stepCount;
     private LocalDate date;
+    private LocalDateTime lastUpdate;
 
     public StepTrackingEntity(Long userId, Integer step, LocalDate date) {
         this.userId = userId;

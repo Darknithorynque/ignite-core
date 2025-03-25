@@ -1,5 +1,6 @@
 package com.example.ignite_core.StepTracking;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -17,8 +18,8 @@ public class StepTrackingController {
     }
 
     @PostMapping("/update")
-    public void updateStep(@RequestParam Long userId, @RequestParam int steps) {
-        service.updateStep(userId, steps);
+    public ResponseEntity<StepTrackingEntity> updateStep(@RequestParam Long userId, @RequestParam int steps, @RequestParam LocalDate date) {
+       return service.updateRecord(userId, steps,date);
     }
 
     @GetMapping("/{userId}")

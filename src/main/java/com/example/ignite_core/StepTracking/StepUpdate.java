@@ -17,5 +17,7 @@ public class StepUpdate {
     private LocalDate date;
 
     public StepUpdate(Long userId, int stepCount) {
+        this.userId = userId;
+        this.stepCount = stepCount;
     }
 }
