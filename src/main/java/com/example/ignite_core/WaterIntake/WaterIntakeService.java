@@ -32,9 +32,7 @@ public class WaterIntakeService {
 
 
         waterIntake.setAmount(amount);
-        //waterIntake.setLastUpdatedAt(now);
-        waterIntake.setUserId(userId);
-        //waterIntake.setDate(today);
+        waterIntake.setLastUpdatedAt(now);
 
         repository.save(waterIntake);
         return ResponseEntity.ok(waterIntake);

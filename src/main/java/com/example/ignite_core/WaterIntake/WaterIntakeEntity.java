@@ -26,5 +26,9 @@ public class WaterIntakeEntity {
     private LocalDateTime lastUpdatedAt;
 
     public WaterIntakeEntity(Long userId, LocalDate today, double amount, LocalDateTime now) {
+        this.userId = userId;
+        this.amount = amount;
+        this.date = today;
+        this.lastUpdatedAt = now;
     }
 }
