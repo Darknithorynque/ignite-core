@@ -29,6 +29,7 @@ public class NutritionService {
     UserRepository userRepository;
     MealRepository mealRepository;
 
+
     public NutritionService(EatingHabitRepository eatingHabitRepository, MealBoxRepository mealBoxRepository, UserRepository userRepository, MealRepository mealRepository) {
         this.eatingHabitRepository = eatingHabitRepository;
         this.mealBoxRepository = mealBoxRepository;
@@ -281,7 +282,5 @@ public class NutritionService {
 
         return ResponseEntity.noContent().build();
     }
-
-
 
 }

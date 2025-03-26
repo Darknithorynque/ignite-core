@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
@@ -34,6 +35,8 @@ public class MealEntity {
     @UpdateTimestamp
     private LocalDateTime endDate;
 
+    private LocalDate localDate = createdAt.toLocalDate();
+
     private Calories calories;
 
     private Label label;
@@ -48,5 +51,9 @@ public class MealEntity {
     @Override
     public String toString(){
         return createdAt + " " + endDate;
+    }
+
+    public LocalDate getLocalDate() {
+        return createdAt.toLocalDate();
     }
 }

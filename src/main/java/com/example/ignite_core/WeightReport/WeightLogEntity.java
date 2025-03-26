@@ -31,7 +31,7 @@ public class WeightLogEntity {
 
     @CreationTimestamp
     @JsonView(Views.Basic.class)
-    private LocalDate loggedAt;
+    private LocalDate reportedAt;
 
     @ManyToOne
     @JoinColumn(name = "userId")
