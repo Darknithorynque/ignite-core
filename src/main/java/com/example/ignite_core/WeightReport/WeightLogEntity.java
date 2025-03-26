@@ -1,7 +1,6 @@
-package com.example.ignite_core.WeightLog;
+package com.example.ignite_core.WeightReport;
 
 import com.example.ignite_core.User.UserEntity;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
