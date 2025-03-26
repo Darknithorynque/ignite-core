@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("/weightLog")
+@RequestMapping("/api/weightLog")
 public class WeightLogController {
 
     private final WeightLogService weightLogService;
