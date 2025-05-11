@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public interface WeightLogRepository extends JpaRepository<WeightLogEntity, Long> {
 
-    @Query("SELECT w FROM WeightLogEntity w WHERE w.user.id = :userId and w.loggedAt BETWEEN :from AND :to")
+    @Query("SELECT w FROM WeightLogEntity w WHERE w.user.id = :userId and w.reportedAt BETWEEN :from AND :to")
     List<WeightLogEntity> queryWeightLogByUserIdBetween(@Param("userId") Long userId,@Param("from") LocalDate from,@Param("to") LocalDate to);
 
     @Query("SELECT w FROM WeightLogEntity w WHERE w.user.id = :userId")

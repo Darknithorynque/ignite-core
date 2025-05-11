@@ -25,8 +25,6 @@ public class MealEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private int mealCode; //1: Breakfast, 2: Lunch, 3: Dinner, 4: Snack
-
     private String content;
 
     @CreationTimestamp
@@ -35,13 +33,13 @@ public class MealEntity {
     @UpdateTimestamp
     private LocalDateTime endDate;
 
-    private LocalDate localDate = createdAt.toLocalDate();
+//    private LocalDate localDate = createdAt.toLocalDate();
 
     private Calories calories;
 
     private Label label;
 
-    private boolean inBoxStatus;
+    private boolean inBoxStatus = false;
 
     @ManyToOne
     @JoinColumn(name = "meal_box_id")
@@ -54,6 +52,6 @@ public class MealEntity {
     }
 
     public LocalDate getLocalDate() {
-        return createdAt.toLocalDate();
+        return createdAt != null ? createdAt.toLocalDate() : null; // Null safety
     }
 }

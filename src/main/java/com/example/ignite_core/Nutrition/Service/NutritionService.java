@@ -1,4 +1,4 @@
-package com.example.ignite_core.Nutrition;
+package com.example.ignite_core.Nutrition.Service;
 
 import com.example.ignite_core.Nutrition.Model.Entity.EatingHabitEntity;
 import com.example.ignite_core.Nutrition.Model.Entity.MealBoxEntity;
@@ -207,7 +207,7 @@ public class NutritionService {
 
         if (mealBox == null) {
             logger.error("Related meal box has not been found");
-            throw new RuntimeException("Meal has not related to meal box");
+            throw new RuntimeException("User has not related to a meal box");
         }
 
         for (MealEntity mealState : mealBox.getMeals()) {
@@ -235,7 +235,6 @@ public class NutritionService {
         logger.info("Updating meal: {}", meal);
         if (existingMeal.isPresent() && existingMealBox.isPresent()) {
             existingMeal.get().setMealBox(existingMealBox.get());
-            existingMeal.get().setMealCode(meal.getMealCode());
             existingMeal.get().setCreatedAt(meal.getCreatedAt());
             existingMeal.get().setEndDate(meal.getEndDate());
             existingMeal.get().setContent(meal.getContent());

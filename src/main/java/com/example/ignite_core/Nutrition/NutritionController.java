@@ -2,9 +2,11 @@ package com.example.ignite_core.Nutrition;
 
 import com.example.ignite_core.Nutrition.Model.Entity.MealBoxEntity;
 import com.example.ignite_core.Nutrition.Model.Entity.MealEntity;
-import org.springframework.http.ResponseEntity;
-import com.example.ignite_core.Nutrition.Model.Entity.MealEntity;
-import org.springframework.data.repository.query.Param;
+import com.example.ignite_core.Nutrition.Model.Request.MealRequest;
+import com.example.ignite_core.Nutrition.Model.Response.MealResponse;
+import com.example.ignite_core.Nutrition.Service.NutritionService;
+import com.example.ignite_core.Nutrition.Service.OpenAIService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,10 +17,13 @@ import java.util.Optional;
 @RequestMapping("/api/nutrition")
 public class NutritionController {
 
-    NutritionService mealService;
+    private final NutritionService mealService;
 
-    public NutritionController(NutritionService mealService) {
+    private final OpenAIService openAIService;
+
+    public NutritionController(NutritionService mealService, OpenAIService openAIService) {
         this.mealService = mealService;
+        this.openAIService = openAIService;
     }
 
 //    @GetMapping("/eatingHabit/all")
@@ -122,11 +127,17 @@ public class NutritionController {
         return mealService.deleteAllMealsByUserId(userId);
     }
 
-    //Not Recommend
-//    @DeleteMapping("/delete/all")
-//    public ResponseEntity<Void> deleteAllMeals() {
-//       return mealService.deleteAllMeals();
-//    }
+    @PostMapping("/meal/evaluate")
+    public ResponseEntity<MealResponse> evaluateMeal(@RequestBody MealRequest mealRequest){
+        try {
+            MealResponse mealResponse = openAIService.getMealResponse(mealRequest);
+            return ResponseEntity.ok(mealResponse);
+        } catch (Exception e){
+            System.err.println("Controller caught exception: "+ e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
 
 
 }
