@@ -1,9 +1,7 @@
 package com.example.ignite_core.Nutrition.Service;
 
-import com.example.ignite_core.Nutrition.Model.Entity.EatingHabitEntity;
 import com.example.ignite_core.Nutrition.Model.Entity.MealBoxEntity;
 import com.example.ignite_core.Nutrition.Model.Entity.MealEntity;
-import com.example.ignite_core.Nutrition.Repository.EatingHabitRepository;
 import com.example.ignite_core.Nutrition.Repository.MealBoxRepository;
 import com.example.ignite_core.Nutrition.Repository.MealRepository;
 import com.example.ignite_core.User.UserRepository;
@@ -24,71 +22,15 @@ public class NutritionService {
 
     private static final Logger logger = LoggerFactory.getLogger(NutritionService.class);
 
-    EatingHabitRepository eatingHabitRepository;
     MealBoxRepository mealBoxRepository;
     UserRepository userRepository;
     MealRepository mealRepository;
 
 
-    public NutritionService(EatingHabitRepository eatingHabitRepository, MealBoxRepository mealBoxRepository, UserRepository userRepository, MealRepository mealRepository) {
-        this.eatingHabitRepository = eatingHabitRepository;
+    public NutritionService(MealBoxRepository mealBoxRepository, UserRepository userRepository, MealRepository mealRepository) {
         this.mealBoxRepository = mealBoxRepository;
         this.userRepository = userRepository;
         this.mealRepository = mealRepository;
-    }
-
-    //Eating Habit
-    public EatingHabitEntity addEatingHabits(EatingHabitEntity eatingHabitEntity) {
-        if(!userRepository.existsById(eatingHabitEntity.getUserId())){
-            throw new RuntimeException("User not found with id: " + eatingHabitEntity.getUserId());
-        }
-
-        if (eatingHabitRepository.existsByUserId(eatingHabitEntity.getUserId())) {
-            throw new RuntimeException("Eating Habit is already exists for user with id: " + eatingHabitEntity.getUserId());
-        }
-        logger.info("Adding new Eating Habit with user id: {}", eatingHabitEntity.getUserId());
-        return eatingHabitRepository.save(eatingHabitEntity);
-    }
-
-    public EatingHabitEntity updateEatingHabit(EatingHabitEntity eatingHabitEntity) {
-
-        if(!eatingHabitRepository.existsByUserId(eatingHabitEntity.getUserId())){
-            throw new RuntimeException("Eating Habit not found with user id: " + eatingHabitEntity.getUserId());
-        }
-        EatingHabitEntity existingEatingHabit = existsEatingHabitById(eatingHabitEntity.getId());
-        existingEatingHabit.setFoodSource(eatingHabitEntity.getFoodSource());
-        existingEatingHabit.setMealsPerDay(eatingHabitEntity.getMealsPerDay());
-        existingEatingHabit.setEatingHabit(eatingHabitEntity.getEatingHabit());
-        logger.info("Updating Eating Habit with id: {}", eatingHabitEntity.getId());
-        return eatingHabitRepository.save(existingEatingHabit);
-    }
-
-    public EatingHabitEntity existsEatingHabitById(Long id){
-        return eatingHabitRepository.findById(id).orElseThrow(() -> new RuntimeException("Eating Habit not found with id: " + id));
-    }
-
-    public List<EatingHabitEntity> getAllEatingHabits(){
-        return eatingHabitRepository.findAll();
-    }
-
-    public Optional<EatingHabitEntity> getEatingHabitById(Long id){
-        logger.info("Fetching Eating Habit with id: {}", id);
-        return eatingHabitRepository.findById(id);
-    }
-
-    public Optional<EatingHabitEntity> getEatingHabitByUserId(Long userId){
-        logger.info("Fetching eating habit by user id: {}", userId);
-        return eatingHabitRepository.findByUserId(userId);
-    }
-
-    public void deleteEatingHabitById(Long id){
-        EatingHabitEntity isEatingHabitExists = existsEatingHabitById(id);
-
-        if(isEatingHabitExists == null){
-            logger.error("Eating Habit not found with id: {}", id);
-            throw new RuntimeException("Eating Habit not found with id: " + id);
-        }
-        eatingHabitRepository.deleteById(id);
     }
 
     //MealBox
@@ -216,7 +158,6 @@ public class NutritionService {
                 throw new RuntimeException("Meal has already been saved");
             }
         }
-
 
         assert mealBox != null;
         mealBox.getMeals().add(meal);

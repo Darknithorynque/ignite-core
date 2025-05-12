@@ -5,7 +5,7 @@ import com.example.ignite_core.Nutrition.Model.Entity.MealEntity;
 import com.example.ignite_core.Nutrition.Model.Request.MealRequest;
 import com.example.ignite_core.Nutrition.Model.Response.MealResponse;
 import com.example.ignite_core.Nutrition.Service.NutritionService;
-import com.example.ignite_core.Nutrition.Service.OpenAIService;
+//import com.example.ignite_core.Nutrition.Service.OpenAIService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,42 +19,12 @@ public class NutritionController {
 
     private final NutritionService mealService;
 
-    private final OpenAIService openAIService;
+//    private final OpenAIService openAIService;
 
-    public NutritionController(NutritionService mealService, OpenAIService openAIService) {
+    public NutritionController(NutritionService mealService/*,  OpenAIService openAIService */) {
         this.mealService = mealService;
-        this.openAIService = openAIService;
+       // this.openAIService = openAIService;
     }
-
-//    @GetMapping("/eatingHabit/all")
-//    public List<EatingHabitEntity> getAllEatingHabits() {
-//        return mealService.getAllEatingHabits();
-//    }
-//
-//    @GetMapping("/eatingHabit/{id}")
-//    public Optional<EatingHabitEntity> getEatingHabitById(@PathVariable Long id) {
-//        return mealService.getEatingHabitById(id);
-//    }
-//
-//    @GetMapping("/eatingHabit/user/{userId}")
-//    public Optional<EatingHabitEntity> getEatingHabitByUserId(@PathVariable Long userId) {
-//        return mealService.getEatingHabitByUserId(userId);
-//    }
-//
-//    @PostMapping("/eatingHabit/save")
-//    public EatingHabitEntity saveEatingHabit(@RequestBody EatingHabitEntity entity) {
-//        return mealService.addEatingHabits(entity);
-//    }
-//
-//    @PutMapping("/eatingHabit/update")
-//    public EatingHabitEntity updateEatingHabit(@RequestBody EatingHabitEntity entity) {
-//        return mealService.updateEatingHabit(entity);
-//    }
-//
-//    @DeleteMapping("/eatingHabit/delete/{id}")
-//    public void deleteEatingHabit(@PathVariable Long id) {
-//        mealService.deleteEatingHabitById(id);
-//    }
 
     //MealBox
     @PostMapping("/mealBox/save")
@@ -127,16 +97,16 @@ public class NutritionController {
         return mealService.deleteAllMealsByUserId(userId);
     }
 
-    @PostMapping("/meal/evaluate")
-    public ResponseEntity<MealResponse> evaluateMeal(@RequestBody MealRequest mealRequest){
-        try {
-            MealResponse mealResponse = openAIService.getMealResponse(mealRequest);
-            return ResponseEntity.ok(mealResponse);
-        } catch (Exception e){
-            System.err.println("Controller caught exception: "+ e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
+//    @PostMapping("/meal/evaluate")
+//    public ResponseEntity<MealResponse> evaluateMeal(@RequestBody MealRequest mealRequest){
+//        try {
+//            MealResponse mealResponse = openAIService.getMealResponse(mealRequest);
+//            return ResponseEntity.ok(mealResponse);
+//        } catch (Exception e){
+//            System.err.println("Controller caught exception: "+ e);
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+//        }
+//    }
 
 
 
