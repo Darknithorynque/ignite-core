@@ -1,5 +1,5 @@
 package com.example.ignite_core.Config;
-import com.example.ignite_core.User.UserEntity;
+import com.example.ignite_core.User.Model.UserEntity;
 import com.example.ignite_core.User.UserRepository;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;

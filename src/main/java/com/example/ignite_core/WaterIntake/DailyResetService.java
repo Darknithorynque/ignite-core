@@ -1,6 +1,6 @@
 package com.example.ignite_core.WaterIntake;
 
-import com.example.ignite_core.User.UserEntity;
+import com.example.ignite_core.User.Model.UserEntity;
 import com.example.ignite_core.User.UserRepository;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;

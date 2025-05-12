@@ -1,7 +1,7 @@
 package com.example.ignite_core.Auth;
 
 import com.example.ignite_core.Auth.Model.LoginRequest;
-import com.example.ignite_core.User.UserEntity;
+import com.example.ignite_core.User.Model.UserEntity;
 import com.example.ignite_core.User.UserRepository;
 import com.example.ignite_core.Utlility.InvalidUserException;
 import com.example.ignite_core.Utlility.JwtUtil;
@@ -34,7 +34,7 @@ public class AuthService {
 
     public String register(UserEntity user) {
         log.info("register user: {}", user.getEmail());
-        UserEntity registeredUser = new UserEntity(user.getId(), user.getName(), user.getHeight(), user.getWeight(), user.getEmail(), user.getPassword(), user.getSex(), user.getAge(), user.getAllergies());
+        UserEntity registeredUser = new UserEntity(user.getId(), user.getName(), user.getHeight(), user.getWeight(), user.getEmail(), user.getPassword(), user.getSex(), user.getAge());
         registeredUser.setPassword(passwordEncoder.encode(user.getPassword()));
          userRepository.save(registeredUser);
 

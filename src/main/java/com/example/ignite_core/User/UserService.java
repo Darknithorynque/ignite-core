@@ -1,11 +1,11 @@
 package com.example.ignite_core.User;
+import com.example.ignite_core.User.Model.UpdateUserRequest;
+import com.example.ignite_core.User.Model.UserEntity;
 import com.example.ignite_core.Utlility.InvalidUserException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -62,41 +62,6 @@ public class UserService {
 
     public void deleteUser(Long id){
         userRepository.deleteById(id);
-    }
-
-    public void addAllergies(ArrayList<String> allergies, Long id){
-        UserEntity user = existingUser(id);
-        for (String allergy : allergies){
-            if(!user.getAllergies().contains(allergy)){
-                user.getAllergies().add(allergy);
-            }
-        }
-        userRepository.save(user);
-    }
-
-    @Transactional
-    public void deleteAllergies(ArrayList<String> allergies, Long id){
-        UserEntity user = existingUser(id);
-        List<String> userAllergies = new ArrayList<>(user.getAllergies());
-
-        userAllergies.removeIf(allergy -> allergies.stream()
-                .anyMatch(a -> a.trim().equalsIgnoreCase(allergy.trim())));
-
-        System.out.println("alllergies: "+ userAllergies );
-        user.setAllergies(userAllergies);
-        userRepository.save(user);
-    }
-
-    public void updateAllergies(ArrayList<String> allergies, Long id){
-        UserEntity user = existingUser(id);
-
-        user.setAllergies(new ArrayList<>());
-
-        for (String allergy : allergies) {
-            user.getAllergies().add(allergy);
-        }
-
-        userRepository.save(user);
     }
 
     public UserEntity existingUser(Long id){

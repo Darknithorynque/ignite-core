@@ -1,4 +1,4 @@
-package com.example.ignite_core.User;
+package com.example.ignite_core.User.Model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

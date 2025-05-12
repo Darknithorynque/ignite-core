@@ -1,5 +1,6 @@
 package com.example.ignite_core.User;
 
+import com.example.ignite_core.User.Model.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
