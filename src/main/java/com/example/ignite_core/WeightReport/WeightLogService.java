@@ -1,6 +1,6 @@
 package com.example.ignite_core.WeightReport;
 
-import com.example.ignite_core.User.UserEntity;
+import com.example.ignite_core.User.Model.UserEntity;
 import com.example.ignite_core.User.UserRepository;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;

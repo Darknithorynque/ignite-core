@@ -2,8 +2,7 @@ package com.example.ignite_core.Auth;
 
 import com.example.ignite_core.Auth.Model.JwtResponse;
 import com.example.ignite_core.Auth.Model.LoginRequest;
-import com.example.ignite_core.User.UserEntity;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.ignite_core.User.Model.UserEntity;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
